@@ -1,0 +1,60 @@
+tbody {
+    td {
+        padding: 1rem;
+    }
+    .prod {
+        display: flex;
+        align-items: center;
+        img {
+            width: 5rem;
+            height: 5rem;
+            margin-left: 1rem;
+        }
+
+        h2 {
+            font-size: 1rem;
+            margin-left: 1rem;
+        }
+    }
+
+    .quantity {
+        width: 100%;
+
+        label {
+            position: absolute;
+            left: -99999px;
+        }
+
+        input[type="quantity"] {
+            width: 5rem;
+            height: 1.5rem;
+            border: 1px solid #ccc;
+            border-left: none;
+            border-right: none;
+            outline: none;
+            text-align: center;
+        }
+
+        button {
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            vertical-align: bottom;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .deleteBtn {
+        background-color: white;
+        border: none;
+        font-size: 0.8rem;
+        &:hover {
+            color: red;
+            cursor: pointer;
+        }
+    }
+}

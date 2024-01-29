@@ -1,0 +1,59 @@
+.filterBox {
+    width: 20%;
+    min-width: 250px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fieldset {
+        margin-left: 2rem;
+        border: none;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        legend {
+            margin-bottom: 1rem;
+            font-weight: bold;
+            svg {
+                margin-right: 0.5rem;
+            }
+        }
+        .filterType {
+            label {
+                padding-left: 0.5rem;
+            }
+        }
+
+        .filterDate {
+            display: flex;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+
+            label {
+                width: 100%;
+            }
+
+            .number {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin: 0.5rem 0;
+
+                input[type="number"] {
+                    width: 2.5rem;
+                    height: 1rem;
+                    padding: 0.5rem;
+                    border: 1px solid #ccc;
+                    border-radius: 10%;
+                    outline: none;
+                }
+
+                input[type="number"]::-webkit-outer-spin-button,
+                input[type="number"]::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+.signUpForm {
+    width: 30%;
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        padding: 0.5rem;
+        outline: none;
+    }
+
+    label {
+        margin-top: 1rem;
+    }
+
+    input[type="submit"] {
+        margin-top: 2rem;
+        padding: 0.5rem;
+        background-color: black;
+        color: white;
+        font-weight: bold;
+        font-size: 0.7rem;
+        border: none;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    p {
+        margin-top: 1rem;
+        font-size: 0.8rem;
+    }
+}
