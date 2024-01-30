@@ -53,7 +53,7 @@ const FilterList = () => {
                     <label htmlFor="all">全部</label>
                 </div>
                 {booksType.map((type) => (
-                    <div className="filterType">
+                    <div className="filterType" key={type}>
                         <input
                             type="checkbox"
                             id={type}

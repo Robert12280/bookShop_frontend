@@ -1,35 +1,45 @@
-.loginForm {
+.login {
     width: 25%;
-    margin-top: 6rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    margin-top: 5rem;
 
-    input[type="text"],
-    input[type="password"] {
-        padding: 0.5rem;
-        outline: none;
-    }
+    .loginForm {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
-    label {
-        margin-top: 1rem;
-    }
-
-    input[type="submit"] {
-        margin-top: 2rem;
-        padding: 0.5rem;
-        background-color: black;
-        color: white;
-        font-weight: bold;
-        font-size: 0.7rem;
-        border: none;
-
-        &:hover {
-            cursor: pointer;
+        input[type="text"],
+        input[type="password"] {
+            padding: 0.5rem;
+            outline: none;
         }
-    }
-    p {
-        margin-top: 1rem;
-        font-size: 0.8rem;
+
+        label {
+            margin-top: 1rem;
+        }
+
+        .errMsg {
+            color: red;
+            font-size: 0.8rem;
+        }
+
+        input[type="submit"] {
+            margin-top: 2rem;
+            padding: 0.5rem;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
+            border: none;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        p {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
     }
 }

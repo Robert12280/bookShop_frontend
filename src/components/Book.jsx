@@ -6,7 +6,7 @@ const Book = ({ book }) => {
         <Link className="book" to={`book/${book.bookId}`}>
             <article>
                 <img src={book.imgSrc} alt="bookImg" />
-                <h3>{book.bookName}</h3>
+                <h3>{book.bookname}</h3>
                 <p>{`作者：${book.author}`}</p>
                 <p>{`種類：${book.type}`}</p>
                 <p>{`出版年份：${book.publishYear}`}</p>

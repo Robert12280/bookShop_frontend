@@ -40,7 +40,7 @@ const BookPage = () => {
     const handleAddCart = () => {
         const bookBuyInfo = {
             bookId: parseInt(bookId),
-            bookName: book.bookName,
+            bookname: book.bookname,
             quantity: quantity,
             price: book.price,
             totalPrice: book.price * quantity,
@@ -67,7 +67,7 @@ const BookPage = () => {
     const handleBuy = () => {
         const bookBuyInfo = {
             bookId: parseInt(bookId),
-            bookName: book.bookName,
+            bookname: book.bookname,
             quantity: quantity,
             price: book.price,
             totalPrice: book.price * quantity,

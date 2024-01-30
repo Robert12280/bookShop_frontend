@@ -11,16 +11,23 @@
         height: 4rem;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-
-        .homeBtn {
-            text-decoration: none;
-            color: white;
-            padding: 0 1rem;
-            font-size: 2rem;
-            font-weight: bold;
-            &:hover {
-                color: orange;
+        justify-content: space-between;
+        .header {
+            display: flex;
+            align-items: center;
+            .homeBtn {
+                text-decoration: none;
+                color: white;
+                padding: 0 1rem;
+                font-size: 2rem;
+                font-weight: bold;
+                &:hover {
+                    color: orange;
+                }
+            }
+            h2 {
+                color: white;
+                padding: 0 0.5rem;
             }
         }
 
@@ -29,7 +36,7 @@
             max-width: 1200px;
             padding: 0.5rem 0;
             display: flex;
-            justify-content: flex-start;
+            justify-content: flex-end;
             align-items: center;
 
             label {
@@ -81,9 +88,59 @@
             }
         }
 
-        h2 {
-            color: white;
-            padding: 0 0.5rem;
+        .user {
+            display: flex;
+            flex-direction: column;
+            margin-left: 0.5rem;
+            .userBtn {
+                color: white;
+                background-color: black;
+                border: none;
+                width: 2rem;
+                height: 2rem;
+                font-size: 1.4rem;
+                margin-top: 10px;
+
+                &:hover {
+                    cursor: pointer;
+                    color: #ccc;
+                }
+            }
+
+            .userOptions {
+                background-color: white;
+                position: absolute;
+                top: 70px;
+                border: 2px solid #bbb;
+                border-radius: 5px;
+                ul {
+                    li {
+                        padding: 0.5rem 1rem;
+                        list-style: none;
+                        a {
+                            font-size: 0.7rem;
+                            text-decoration: none;
+                            color: black;
+                            &:hover {
+                                color: rgb(255, 115, 0);
+                            }
+                        }
+
+                        button {
+                            background-color: white;
+                            border: none;
+                            font-size: 0.7rem;
+                            &:hover {
+                                cursor: pointer;
+                                color: rgb(255, 115, 0);
+                            }
+                        }
+                    }
+                    .logoutBtn {
+                        border-top: 1px solid #ddd;
+                    }
+                }
+            }
         }
     }
 }

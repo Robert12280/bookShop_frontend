@@ -48,7 +48,7 @@ const CartBook = ({ book }) => {
                             onChange={() => handleChecked(book.bookId)}
                         />
                         <img src={book.imgSrc} alt="bookImg" />
-                        <h2>{book.bookName}</h2>
+                        <h2>{book.bookname}</h2>
                     </div>
                 </td>
                 <td>
@@ -86,7 +86,7 @@ const CartBook = ({ book }) => {
                         <button
                             onClick={() =>
                                 handleChangeQuantity(
-                                    book.id,
+                                    book.bookId,
                                     parseInt(book.quantity + 1)
                                 )
                             }

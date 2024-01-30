@@ -1,7 +1,8 @@
 import "./Nav.scss";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { FaUser } from "react-icons/fa";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useStoreState, useStoreActions } from "easy-peasy";
 
 const Nav = () => {
@@ -12,7 +13,24 @@ const Nav = () => {
     const setSearchResults = useStoreActions(
         (actions) => actions.setSearchResults
     );
-    const location = useLocation();
+    const logoutPost = useStoreActions((actions) => actions.logoutPost);
+
+    const isLogoutSuccess = useStoreState((state) => state.isLogoutSuccess);
+    const errMsg = useStoreState((state) => state.errMsg);
+
+    const setErrMsg = useStoreActions((actions) => actions.setErrMsg);
+
+    const isLoading = useStoreState((state) => state.isLoading);
+
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+
+    const isLoginPage = pathname === "/login";
+    const isSignUpPage = pathname === "/signup";
+    const isCartPage = /^\/cart(\/)?$/.test(pathname);
+    const isBookPage = /^\/book\/\d+(\/)?$/.test(pathname);
+
+    const [userBtnIsActive, setUserBtnIsActive] = useState(false);
 
     useEffect(() => {
         const filteredResult = books;
@@ -20,29 +38,49 @@ const Nav = () => {
         setSearchResults(filteredResult.reverse());
     }, [books, search, setSearchResults]);
 
-    const isLoginPage = location.pathname === "/login";
-    const isSignUpPage = location.pathname === "/signup";
+    useEffect(() => {
+        if (isLogoutSuccess) navigate("/");
+    }, [isLogoutSuccess, navigate]);
+
+    if (isLoading) return <p style={{ marginTop: "10rem" }}>Logging Out...</p>;
+
+    if (errMsg) {
+        const err = errMsg;
+        setErrMsg("");
+        return <p style={{ marginTop: "10rem" }}>{err}</p>;
+    }
 
     return (
         <nav className="nav">
             <div className="navContainer">
-                <Link className="homeBtn" to={"/"}>
-                    BookShop
-                </Link>
-                {!isLoginPage && !isSignUpPage && (
+                <div className="header">
+                    <Link className="homeBtn" to={"/"}>
+                        BookShop
+                    </Link>
+                    {isCartPage && <h2>購物車</h2>}
+                    {isLoginPage && <h2>登入</h2>}
+                    {isSignUpPage && <h2>註冊</h2>}
+                </div>
+
+                {!isLoginPage && !isSignUpPage && !isCartPage && (
                     <form
                         className="navForm"
                         onSubmit={(e) => e.preventDefault()}
                     >
-                        <label htmlFor="search">Search</label>
-                        <input
-                            type="text"
-                            id="search"
-                            role="searchbox"
-                            placeholder="Search Books"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
+                        {!isBookPage && (
+                            <>
+                                <label htmlFor="search">Search</label>
+                                <input
+                                    type="text"
+                                    id="search"
+                                    role="searchbox"
+                                    placeholder="Search Books"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </>
+                        )}
+
                         <Link className="cartBtn" to={"/cart"}>
                             <FaShoppingCart />
                         </Link>
@@ -51,13 +89,36 @@ const Nav = () => {
                                 <p>{bookInCart.length}</p>
                             </span>
                         )}
-                        <Link className="signInBtn" to={"/login"}>
+                        {/* <Link className="signInBtn" to={"/login"}>
                             Sign in
-                        </Link>
+                        </Link> */}
                     </form>
                 )}
-                {isLoginPage && !isSignUpPage && <h2>登入</h2>}
-                {!isLoginPage && isSignUpPage && <h2>註冊</h2>}
+                <div className="user">
+                    <button
+                        className="userBtn"
+                        onMouseEnter={() => setUserBtnIsActive(true)}
+                        onMouseLeave={() => setUserBtnIsActive(false)}
+                    >
+                        <FaUser />
+                    </button>
+                    {userBtnIsActive && (
+                        <div
+                            className="userOptions"
+                            onMouseEnter={() => setUserBtnIsActive(true)}
+                            onMouseLeave={() => setUserBtnIsActive(false)}
+                        >
+                            <ul>
+                                <li>
+                                    <Link to="/orders">查看訂單</Link>
+                                </li>
+                                <li className="logoutBtn">
+                                    <button>登出</button>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
         </nav>
     );
