@@ -1,16 +1,16 @@
 import "./CartPage.scss";
 import CartBook from "./CartBook";
-import { useStoreActions, useStoreState } from "easy-peasy";
+import { useStoreState } from "easy-peasy";
 
 const CartPage = () => {
     const bookInCart = useStoreState((state) => state.bookInCart);
-    const setOrder = useStoreActions((actions) => actions.setOrder);
+    // const setOrder = useStoreActions((actions) => actions.setOrder);
 
     const handleSubmit = () => {
-        const order = bookInCart.filter((book) => book.checked);
-        if (order) {
-        } else {
-        }
+        // const order = bookInCart.filter((book) => book.checked);
+        // if (order) {
+        // } else {
+        // }
     };
 
     return (
@@ -42,12 +42,12 @@ const CartPage = () => {
                             <span
                                 style={{ color: "rgb(230, 0 ,0)" }}
                             >{`$${bookInCart
-                                .filter((book) => book.checked)
+                                .filter((book) => book.active)
                                 .reduce((price, book) => {
                                     return price + book.totalPrice;
                                 }, 0)}`}</span>
                         </p>
-                        <input type="submit" value="送出訂單" />
+                        <button onClick={handleSubmit}>送出訂單</button>
                     </form>
                 </>
             ) : (

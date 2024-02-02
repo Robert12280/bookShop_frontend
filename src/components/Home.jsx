@@ -4,7 +4,7 @@ import BookList from "../components/BookList";
 import { useEffect } from "react";
 import { useStoreState, useStoreActions } from "easy-peasy";
 
-const Home = ({ isLoading, fetchError }) => {
+const Home = ({ isBookLoading, bookFetchError, isCartLoading }) => {
     const filterResults = useStoreState((state) => state.filterResults);
     const searchResults = useStoreState((state) => state.searchResults);
     const filterType = useStoreState((state) => state.filterType);
@@ -31,15 +31,21 @@ const Home = ({ isLoading, fetchError }) => {
         );
 
         setFilterResults(filterList);
-    }, [searchResults, filterType, filterMinYear, filterMaxYear]);
+    }, [
+        searchResults,
+        filterType,
+        filterMinYear,
+        filterMaxYear,
+        setFilterResults,
+    ]);
 
     return (
         <main className="home">
-            {isLoading && <p>Loading books...</p>}
-            {!isLoading && fetchError && (
-                <p style={{ color: "red" }}>{fetchError}</p>
+            {(isBookLoading || isCartLoading) && <p>Loading books...</p>}
+            {!isBookLoading && !isCartLoading && bookFetchError && (
+                <p style={{ color: "red" }}>{bookFetchError}</p>
             )}
-            {!isLoading && !fetchError && (
+            {!isBookLoading && !isCartLoading && !bookFetchError && (
                 <>
                     <FilterList />
                     {filterResults.length ? (

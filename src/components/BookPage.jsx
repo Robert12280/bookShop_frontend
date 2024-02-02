@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import "./BookPage.scss";
 import { useStoreActions, useStoreState } from "easy-peasy";
@@ -6,15 +6,18 @@ import { RiAddFill, RiSubtractFill } from "react-icons/ri";
 import { FaCartPlus } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const BookPage = () => {
     const [quantity, setQuantity] = useState(1);
+    const [isSaveCartError, setIsSaveCartError] = useState(false);
     const navigate = useNavigate();
     const { bookId } = useParams();
     const getBookById = useStoreState((state) => state.getBookById);
     const book = getBookById(bookId);
     const bookInCart = useStoreState((state) => state.bookInCart);
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
+    const axiosPrivate = useAxiosPrivate();
 
     const addBookInCart = (bookBuyInfo) => {
         // check book has already in cart
@@ -32,52 +35,103 @@ const BookPage = () => {
         const newBookInCart = [
             ...bookInCart.filter((book) => book.bookId !== bookBuyInfo.bookId),
             bookBuyInfo,
-        ];
+        ].sort((a, b) => a.bookId - b.bookId);
 
-        setBookInCart(newBookInCart.sort((a, b) => a.bookId - b.bookId));
+        // save cart
+        const bookList = newBookInCart.map((item) => ({
+            book: item.book,
+            active: item.active,
+            quantity: item.quantity,
+            totalPrice: item.totalPrice,
+        }));
+
+        const updateCart = () => {
+            const controller = new AbortController();
+
+            const updateCartAxios = async () => {
+                try {
+                    await axiosPrivate.post("/cart", bookList, {
+                        signal: controller.signal,
+                    });
+                } catch (err) {
+                    console.log(`Error: ${err.message}`);
+                    setIsSaveCartError(true);
+                }
+            };
+
+            updateCartAxios();
+
+            return () => {
+                controller.abort();
+            };
+        };
+
+        updateCart();
+        setBookInCart(newBookInCart);
     };
 
     const handleAddCart = () => {
         const bookBuyInfo = {
+            book: book._id,
             bookId: parseInt(bookId),
             bookname: book.bookname,
             quantity: quantity,
             price: book.price,
             totalPrice: book.price * quantity,
-            checked: false,
+            active: false,
             imgSrc: book.imgSrc,
         };
 
-        const toastId = "addCartToastId";
-
         addBookInCart(bookBuyInfo);
 
-        if (!toast.isActive(toastId)) {
-            toast("已加入購物車", {
-                toastId: toastId,
-                autoClose: 2000,
-            });
+        if (!isSaveCartError) {
+            const toastId = "addCartToastSuccessId";
+            if (!toast.isActive(toastId)) {
+                toast.success("已加入購物車", {
+                    toastId: toastId,
+                    autoClose: 2000,
+                });
+            } else {
+                toast.update(toastId, {
+                    autoClose: 2000,
+                });
+            }
         } else {
-            toast.update(toastId, {
-                autoClose: 2000,
-            });
+            const toastId = "addCartToastErrorId";
+            if (!toast.isActive(toastId)) {
+                toast.error("已加入購物車", {
+                    toastId: toastId,
+                    autoClose: 2000,
+                });
+            } else {
+                toast.update(toastId, {
+                    autoClose: 2000,
+                });
+            }
         }
+        setIsSaveCartError(false);
     };
 
     const handleBuy = () => {
         const bookBuyInfo = {
+            book: book._id,
             bookId: parseInt(bookId),
             bookname: book.bookname,
             quantity: quantity,
             price: book.price,
             totalPrice: book.price * quantity,
-            checked: true,
+            active: true,
             imgSrc: book.imgSrc,
         };
 
         addBookInCart(bookBuyInfo);
         navigate("/cart");
     };
+
+    useEffect(() => {
+        const QUANTITY_REGEX = /^[1-9]\d*$/;
+        if (!QUANTITY_REGEX.test(parseInt(quantity))) setQuantity(1);
+    }, [quantity]);
 
     return (
         <main className="bookPage">
@@ -102,11 +156,7 @@ const BookPage = () => {
                             <div className="quantity">
                                 <button
                                     onClick={() =>
-                                        setQuantity(
-                                            parseInt(quantity) - 1 < 1
-                                                ? 1
-                                                : parseInt(quantity) - 1
-                                        )
+                                        setQuantity(parseInt(quantity) - 1)
                                     }
                                 >
                                     <RiSubtractFill />
@@ -116,7 +166,7 @@ const BookPage = () => {
                                     id="quantity"
                                     value={quantity}
                                     onChange={(e) =>
-                                        setQuantity(e.target.value)
+                                        setQuantity(parseInt(e.target.value))
                                     }
                                 />
                                 <label htmlFor="quantity">amount</label>

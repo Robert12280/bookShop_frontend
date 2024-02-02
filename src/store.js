@@ -1,5 +1,5 @@
 import { createStore, action, thunk, computed } from "easy-peasy";
-import usersApi from "./api/users";
+import axios from "./api/axios";
 
 export default createStore({
     books: [],
@@ -42,13 +42,21 @@ export default createStore({
     setOrder: action((state, payload) => {
         state.order = payload;
     }),
-    token: "",
+    token: null,
     setToken: action((state, payload) => {
         state.token = payload;
     }),
-    errMsg: "",
-    setErrMsg: action((state, payload) => {
-        state.errMsg = payload;
+    loginErrMsg: "",
+    setLoginErrMsg: action((state, payload) => {
+        state.loginErrMsg = payload;
+    }),
+    logoutErrMsg: "",
+    setLogoutErrMsg: action((state, payload) => {
+        state.logoutErrMsg = payload;
+    }),
+    registerErrMsg: "",
+    setRegisterErrMsg: action((state, payload) => {
+        state.registerErrMsg = payload;
     }),
     isLoading: false,
     setIsLoading: action((state, payload) => {
@@ -58,46 +66,51 @@ export default createStore({
     setIsLogoutSuccess: action((state, payload) => {
         state.isLogoutSuccess = payload;
     }),
+    isRegisterSuccess: false,
+    setIsRegisterSuccess: action((state, payload) => {
+        state.isRegisterSuccess = payload;
+    }),
     getBookById: computed((state) => {
         return (bookId) =>
             state.books.find((book) => book.bookId.toString() === bookId);
     }),
-    signInPost: thunk(async (actions, user, helpers) => {
+    registerPost: thunk(async (actions, user, helpers) => {
         try {
             actions.setIsLoading(true);
-            const response = await usersApi.post("/login", user);
-            actions.setToken(response.data.accessToken);
+            const response = await axios.post("/client/register", user);
+            console.log(response);
+            actions.setIsRegisterSuccess(true);
         } catch (err) {
-            if (!err.response.status) {
-                actions.setErrMsg("No Server Response");
-            } else if (err.response.status === 400) {
-                actions.setErrMsg("Missing Username of Password");
-            } else if (err.response.status === 401) {
-                actions.setErrMsg("使用者名稱或密碼錯誤");
-            }
+            console.log(`Error: ${err.message}`);
+            actions.setRegisterErrMsg(err.message);
         } finally {
             actions.setIsLoading(false);
+        }
+    }),
+    loginPost: thunk(async (actions, user, helpers) => {
+        try {
+            const response = await axios.post("/client/login", user, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            actions.setToken(response?.data?.accessToken);
+        } catch (err) {
+            if (!err.response.status) {
+                actions.setLoginErrMsg("No Server Response");
+            } else if (err.response.status === 400) {
+                actions.setLoginErrMsg("Missing Username of Password");
+            } else if (err.response.status === 401) {
+                actions.setLoginErrMsg("使用者名稱或密碼錯誤");
+            }
         }
     }),
     logoutPost: thunk(async (actions) => {
         try {
-            actions.setIsLoading(true);
-            await usersApi.post("/logout");
+            await axios.post("/client/logout", null, { withCredentials: true });
             actions.setIsLogoutSuccess(true);
+            actions.setToken(null);
         } catch (err) {
-            actions.setErrMsg(`Error: ${err.message}`);
-            console.log(`Error: ${err.message}`);
-        } finally {
-            actions.setIsLoading(false);
-        }
-    }),
-    refreshGet: thunk(async (actions, user, helpers) => {
-        try {
-            const response = await usersApi.get("/refresh");
-            actions.setToken(response.data.accessToken);
-            const { token } = helpers.getState();
-            console.log(token);
-        } catch (err) {
+            actions.setLogoutErrMsg(`Error: ${err.message}`);
             console.log(`Error: ${err.message}`);
         }
     }),

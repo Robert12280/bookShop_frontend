@@ -1,36 +1,36 @@
 import { useState, useEffect, useRef } from "react";
-import "./SignInPage.scss";
+import "./LoginPage.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useStoreState, useStoreActions } from "easy-peasy";
 
-const SignInPage = () => {
+const LoginPage = () => {
     const userRef = useRef();
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const isLoading = useStoreState((state) => state.isLoading);
-    const errMsg = useStoreState((state) => state.errMsg);
-    const setErrMsg = useStoreActions((actions) => actions.setErrMsg);
+    const loginErrMsg = useStoreState((state) => state.loginErrMsg);
+    const setLoginErrMsg = useStoreActions((actions) => actions.setLoginErrMsg);
 
     const token = useStoreState((state) => state.token);
-    const signInPost = useStoreActions((actions) => actions.signInPost);
+    const loginPost = useStoreActions((actions) => actions.loginPost);
 
     useEffect(() => {
         userRef.current.focus();
     }, []);
 
     useEffect(() => {
-        setErrMsg("");
+        setLoginErrMsg("");
     }, [username, password]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await signInPost({ username, password });
-        setUsername("");
-        setPassword("");
-        console.log(token);
+    useEffect(() => {
         if (token) navigate("/");
+    }, [token]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        loginPost({ username, password });
     };
 
     if (isLoading) return <p style={{ marginTop: "10rem" }}>Loading...</p>;
@@ -58,15 +58,15 @@ const SignInPage = () => {
                     required
                 />
                 <p className="errMsg" aria-live="assertive">
-                    {errMsg}
+                    {loginErrMsg}
                 </p>
                 <input type="submit" id="submit" value="登入" />
                 <p>
-                    還沒有帳號嗎？請點擊<Link to="/signup">註冊</Link>
+                    還沒有帳號嗎？請點擊<Link to="/register">註冊</Link>
                 </p>
             </form>
         </section>
     );
 };
 
-export default SignInPage;
+export default LoginPage;

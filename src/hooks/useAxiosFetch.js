@@ -2,31 +2,26 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const useAxiosFetch = (dataUrl) => {
-    const [data, setData] = useState([]);
-    const [fetchError, setFetchError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [bookData, setBookData] = useState([]);
+    const [bookFetchError, setBookFetchError] = useState(null);
+    const [bookIsLoading, setBookIsLoading] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
         const controller = new AbortController();
 
         const fetchData = async (url) => {
             try {
-                setIsLoading(true);
+                setBookIsLoading(true);
                 const response = await axios.get(url, {
                     signal: controller.signal,
                 });
-                if (isMounted) {
-                    setFetchError(null);
-                    setData(response.data);
-                }
+                setBookFetchError(null);
+                setBookData(response.data);
             } catch (err) {
-                if (isMounted) {
-                    setFetchError(err.message);
-                    setData([]);
-                }
+                setBookFetchError(err.message);
+                setBookData([]);
             } finally {
-                isMounted && setIsLoading(false);
+                setBookIsLoading(false);
             }
         };
 
@@ -34,14 +29,13 @@ const useAxiosFetch = (dataUrl) => {
 
         const cleanUp = () => {
             console.log("clean up function");
-            isMounted = false;
             controller.abort();
         };
 
         return cleanUp;
     }, [dataUrl]);
 
-    return { data, isLoading, fetchError };
+    return { bookData, bookIsLoading, bookFetchError };
 };
 
 export default useAxiosFetch;

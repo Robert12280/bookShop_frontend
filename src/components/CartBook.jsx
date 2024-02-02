@@ -1,51 +1,139 @@
 import "./CartBook.scss";
 import { RiAddFill, RiSubtractFill } from "react-icons/ri";
 import { useStoreState, useStoreActions } from "easy-peasy";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 const CartBook = ({ book }) => {
     const bookInCart = useStoreState((state) => state.bookInCart);
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
+    const axiosPrivate = useAxiosPrivate();
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [isSaveCartError, setIsSaveCartError] = useState(false);
+    const [timer, setTimer] = useState(null);
+    const [bookList, setBookList] = useState([]);
 
-    const handleChangeQuantity = (bookId, quantuty) => {
+    const updateCart = (bookList) => {
+        setIsDisabled(true);
+        const controller = new AbortController();
+
+        const updateCartAxios = async () => {
+            try {
+                await axiosPrivate.post("/cart", bookList, {
+                    signal: controller.signal,
+                });
+            } catch (err) {
+                setIsSaveCartError(true);
+                console.log(`Error: ${err.message}`);
+            } finally {
+                setIsDisabled(false);
+                if (isSaveCartError) {
+                    toast.error("修改失敗", {
+                        autoClose: 1000,
+                    });
+                    setIsSaveCartError(false);
+                }
+            }
+        };
+
+        updateCartAxios();
+
+        return () => {
+            controller.abort();
+        };
+    };
+
+    const handleChangeQuantity = (bookId, quantity) => {
+        const QUANTITY_REGEX = /^[1-9]\d*$/;
+        if (!QUANTITY_REGEX.test(quantity)) quantity = book.quantity;
         const myBook = bookInCart.find((book) => book.bookId === bookId);
-        myBook.quantity = quantuty;
+        myBook.quantity = quantity;
         myBook.totalPrice = myBook.quantity * myBook.price;
 
         const newBookInCart = [
             ...bookInCart.filter((book) => book.bookId !== bookId),
             myBook,
-        ];
+        ].sort((a, b) => a.bookId - b.bookId);
 
-        setBookInCart(newBookInCart.sort((a, b) => a.bookId - b.bookId));
+        setBookInCart(newBookInCart);
+        setBookList(
+            newBookInCart.map((item) => ({
+                book: item.book,
+                active: item.active,
+                quantity: item.quantity,
+                totalPrice: item.totalPrice,
+            }))
+        );
     };
 
     const handleDelete = (bookId) => {
-        setBookInCart(bookInCart.filter((book) => book.bookId !== bookId));
+        const newBookInCart = bookInCart.filter(
+            (book) => book.bookId !== bookId
+        );
+
+        // save cart
+        const bookList = newBookInCart.map((item) => ({
+            book: item.book,
+            active: item.active,
+            quantity: item.quantity,
+            totalPrice: item.totalPrice,
+        }));
+
+        updateCart(bookList);
+        setBookInCart(newBookInCart);
     };
 
-    const handleChecked = (bookId) => {
+    const handleActive = (bookId) => {
         const myBook = bookInCart.find((book) => book.bookId === bookId);
-        myBook.checked = !myBook.checked;
+        myBook.active = !myBook.active;
 
         const newBookInCart = [
             ...bookInCart.filter((book) => book.bookId !== bookId),
             myBook,
-        ];
+        ].sort((a, b) => a.bookId - b.bookId);
 
-        setBookInCart(newBookInCart.sort((a, b) => a.bookId - b.bookId));
+        // save cart
+        const bookList = newBookInCart.map((item) => ({
+            book: item.book,
+            active: item.active,
+            quantity: item.quantity,
+            totalPrice: item.totalPrice,
+        }));
+
+        updateCart(bookList);
+        setBookInCart(newBookInCart);
     };
+
+    // 計時器（判斷是否連續點擊）
+    useEffect(() => {
+        let interval;
+        if (timer !== null) {
+            interval = setInterval(() => {
+                const currentTime = Date.now();
+
+                if (currentTime >= timer) {
+                    updateCart(bookList);
+                    setTimer(null);
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [timer]);
 
     return (
         <>
             <tr key={book.bookId}>
                 <td>
                     <div className="prod">
-                        <label htmlFor="isProdChecked"></label>
+                        <label htmlFor="isProdActive"></label>
                         <input
                             type="checkbox"
-                            id="isProdChecked"
-                            checked={book.checked}
-                            onChange={() => handleChecked(book.bookId)}
+                            id="isProdActive"
+                            checked={book.active}
+                            onChange={() => handleActive(book.bookId)}
                         />
                         <img src={book.imgSrc} alt="bookImg" />
                         <h2>{book.bookname}</h2>
@@ -59,37 +147,43 @@ const CartBook = ({ book }) => {
                 <td>
                     <div className="quantity">
                         <button
-                            onClick={() =>
+                            disabled={isDisabled}
+                            onClick={() => {
                                 handleChangeQuantity(
                                     book.bookId,
                                     parseInt(book.quantity) - 1 < 1
                                         ? 1
                                         : parseInt(book.quantity) - 1
-                                )
-                            }
+                                );
+                                setTimer(Date.now() + 1000);
+                            }}
                         >
                             <RiSubtractFill />
                         </button>
                         <input
+                            disabled={isDisabled}
                             type="quantity"
                             id="quantity"
                             min="1"
-                            value={book.quantity > 0 ? book.quantity : ""}
+                            value={book.quantity}
+                            onBlur={() => updateCart(bookList)}
                             onChange={(e) =>
                                 handleChangeQuantity(
                                     book.bookId,
-                                    e.target.value
+                                    parseInt(e.target.value)
                                 )
                             }
                         />
                         <label htmlFor="quantity">amount</label>
                         <button
-                            onClick={() =>
+                            disabled={isDisabled}
+                            onClick={() => {
                                 handleChangeQuantity(
                                     book.bookId,
                                     parseInt(book.quantity + 1)
-                                )
-                            }
+                                );
+                                setTimer(Date.now() + 1000);
+                            }}
                         >
                             <RiAddFill />
                         </button>
@@ -109,6 +203,18 @@ const CartBook = ({ book }) => {
                     </button>
                 </td>
             </tr>
+            <ToastContainer
+                position="bottom-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover={false}
+                theme="dark"
+            />
         </>
     );
 };

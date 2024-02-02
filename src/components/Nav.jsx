@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useStoreState, useStoreActions } from "easy-peasy";
+import { jwtDecode } from "jwt-decode";
 
 const Nav = () => {
     const books = useStoreState((state) => state.books);
@@ -15,40 +16,67 @@ const Nav = () => {
     );
     const logoutPost = useStoreActions((actions) => actions.logoutPost);
 
+    const token = useStoreState((state) => state.token);
+
     const isLogoutSuccess = useStoreState((state) => state.isLogoutSuccess);
-    const errMsg = useStoreState((state) => state.errMsg);
+    const setIsLogoutSuccess = useStoreActions(
+        (actions) => actions.setIsLogoutSuccess
+    );
+    const logoutErrMsg = useStoreState((state) => state.logoutErrMsg);
 
-    const setErrMsg = useStoreActions((actions) => actions.setErrMsg);
+    const setLogoutErrMsg = useStoreActions(
+        (actions) => actions.setLogoutErrMsg
+    );
 
-    const isLoading = useStoreState((state) => state.isLoading);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
     const isLoginPage = pathname === "/login";
-    const isSignUpPage = pathname === "/signup";
+    const isRegisterPage = pathname === "/register";
     const isCartPage = /^\/cart(\/)?$/.test(pathname);
     const isBookPage = /^\/book\/\d+(\/)?$/.test(pathname);
 
     const [userBtnIsActive, setUserBtnIsActive] = useState(false);
+    const [username, setUsername] = useState(null);
 
     useEffect(() => {
-        const filteredResult = books;
+        const filteredResult = books.filter((book) =>
+            book.bookname.toLowerCase().includes(search.toLowerCase())
+        );
 
         setSearchResults(filteredResult.reverse());
     }, [books, search, setSearchResults]);
 
     useEffect(() => {
-        if (isLogoutSuccess) navigate("/");
-    }, [isLogoutSuccess, navigate]);
+        if (isLogoutSuccess) {
+            navigate("/");
+            setIsLogoutSuccess(false);
+        }
+    }, [setIsLogoutSuccess, isLogoutSuccess, navigate]);
+
+    useEffect(() => {
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            setUsername(decodedToken.UserInfo.username);
+        }
+    }, [token]);
 
     if (isLoading) return <p style={{ marginTop: "10rem" }}>Logging Out...</p>;
 
-    if (errMsg) {
-        const err = errMsg;
-        setErrMsg("");
+    if (logoutErrMsg) {
+        const err = logoutErrMsg;
+        setLogoutErrMsg("");
         return <p style={{ marginTop: "10rem" }}>{err}</p>;
     }
+
+    const handleLogout = async () => {
+        setIsLoading(true);
+        logoutPost();
+        setIsLoading(false);
+        window.location.reload();
+    };
 
     return (
         <nav className="nav">
@@ -59,10 +87,10 @@ const Nav = () => {
                     </Link>
                     {isCartPage && <h2>購物車</h2>}
                     {isLoginPage && <h2>登入</h2>}
-                    {isSignUpPage && <h2>註冊</h2>}
+                    {isRegisterPage && <h2>註冊</h2>}
                 </div>
 
-                {!isLoginPage && !isSignUpPage && !isCartPage && (
+                {!isLoginPage && !isRegisterPage && !isCartPage && (
                     <form
                         className="navForm"
                         onSubmit={(e) => e.preventDefault()}
@@ -80,45 +108,57 @@ const Nav = () => {
                                 />
                             </>
                         )}
-
-                        <Link className="cartBtn" to={"/cart"}>
-                            <FaShoppingCart />
-                        </Link>
-                        {bookInCart.length && (
-                            <span className="prodAmount">
-                                <p>{bookInCart.length}</p>
-                            </span>
+                        {token && (
+                            <div className="cartBtn">
+                                <Link to={"/cart"}>
+                                    <FaShoppingCart />
+                                </Link>
+                                {bookInCart.length && (
+                                    <span className="prodAmount">
+                                        <p>{bookInCart.length}</p>
+                                    </span>
+                                )}
+                            </div>
                         )}
-                        {/* <Link className="signInBtn" to={"/login"}>
-                            Sign in
-                        </Link> */}
+
+                        {!token && (
+                            <Link className="signInBtn" to={"/login"}>
+                                Sign in
+                            </Link>
+                        )}
                     </form>
                 )}
-                <div className="user">
-                    <button
-                        className="userBtn"
-                        onMouseEnter={() => setUserBtnIsActive(true)}
-                        onMouseLeave={() => setUserBtnIsActive(false)}
-                    >
-                        <FaUser />
-                    </button>
-                    {userBtnIsActive && (
+                {token && (
+                    <>
                         <div
-                            className="userOptions"
+                            className="userContainer"
                             onMouseEnter={() => setUserBtnIsActive(true)}
                             onMouseLeave={() => setUserBtnIsActive(false)}
                         >
-                            <ul>
-                                <li>
-                                    <Link to="/orders">查看訂單</Link>
-                                </li>
-                                <li className="logoutBtn">
-                                    <button>登出</button>
-                                </li>
-                            </ul>
+                            <div className="user">
+                                <button className="userBtn">
+                                    <FaUser />
+                                </button>
+                                <p className="username">{username}</p>
+                            </div>
+
+                            {userBtnIsActive && (
+                                <div className="userOptions">
+                                    <ul>
+                                        <li>
+                                            <Link to="/orders">查看訂單</Link>
+                                        </li>
+                                        <li className="logoutBtn">
+                                            <button onClick={handleLogout}>
+                                                登出
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+                    </>
+                )}
             </div>
         </nav>
     );
