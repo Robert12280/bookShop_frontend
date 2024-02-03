@@ -2,9 +2,9 @@ import "./Order.scss";
 import { CiDeliveryTruck } from "react-icons/ci";
 
 const Order = ({ order }) => {
-    console.log(order);
+    const doneStyle = order.isDone ? "doneStyle" : null;
     return (
-        <li className="orderContainer">
+        <li className={`orderContainer ${doneStyle}`}>
             <div className="top">
                 <span className="orderNum">
                     <p>訂單編號：{order.orderId}</p>
@@ -18,7 +18,7 @@ const Order = ({ order }) => {
             <div className="mid">
                 <ul>
                     {order.bookList.map((book) => (
-                        <li>
+                        <li key={book.bookId}>
                             <div className="imgContainer">
                                 <img src={book.imgSrc} alt="prodImg" />
                             </div>

@@ -3,14 +3,12 @@ import { RiAddFill, RiSubtractFill } from "react-icons/ri";
 import { useStoreState, useStoreActions } from "easy-peasy";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
 
-const CartBook = ({ book }) => {
+const CartBook = ({ book, setIsSaveCartError }) => {
     const bookInCart = useStoreState((state) => state.bookInCart);
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const axiosPrivate = useAxiosPrivate();
     const [isDisabled, setIsDisabled] = useState(false);
-    const [isSaveCartError, setIsSaveCartError] = useState(false);
     const [timer, setTimer] = useState(null);
     const [bookList, setBookList] = useState([]);
 
@@ -28,12 +26,6 @@ const CartBook = ({ book }) => {
                 console.log(`Error: ${err.message}`);
             } finally {
                 setIsDisabled(false);
-                if (isSaveCartError) {
-                    toast.error("修改失敗", {
-                        autoClose: 1000,
-                    });
-                    setIsSaveCartError(false);
-                }
             }
         };
 
@@ -113,7 +105,7 @@ const CartBook = ({ book }) => {
                     setTimer(null);
                     clearInterval(interval);
                 }
-            }, 1000);
+            }, 100);
         }
 
         return () => clearInterval(interval);
@@ -122,68 +114,64 @@ const CartBook = ({ book }) => {
     return (
         <>
             <tr key={book.bookId}>
-                <td>
-                    <div className="prod">
-                        <label htmlFor="isProdActive"></label>
-                        <input
-                            type="checkbox"
-                            id="isProdActive"
-                            checked={book.active}
-                            onChange={() => handleActive(book.bookId)}
-                        />
-                        <img src={book.imgSrc} alt="bookImg" />
-                        <h2>{book.bookname}</h2>
-                    </div>
+                <td className="prod">
+                    <label htmlFor="isProdActive"></label>
+                    <input
+                        type="checkbox"
+                        id="isProdActive"
+                        checked={book.active}
+                        onChange={() => handleActive(book.bookId)}
+                    />
+                    <img src={book.imgSrc} alt="bookImg" />
+                    <h2>{book.bookname}</h2>
                 </td>
                 <td>
                     <p style={{ color: "rgb(230, 0 ,0)" }}>
                         {`$${book.price}`}
                     </p>
                 </td>
-                <td>
-                    <div className="quantity">
-                        <button
-                            disabled={isDisabled}
-                            onClick={() => {
-                                handleChangeQuantity(
-                                    book.bookId,
-                                    parseInt(book.quantity) - 1 < 1
-                                        ? 1
-                                        : parseInt(book.quantity) - 1
-                                );
-                                setTimer(Date.now() + 1000);
-                            }}
-                        >
-                            <RiSubtractFill />
-                        </button>
-                        <input
-                            disabled={isDisabled}
-                            type="quantity"
-                            id="quantity"
-                            min="1"
-                            value={book.quantity}
-                            onBlur={() => updateCart(bookList)}
-                            onChange={(e) =>
-                                handleChangeQuantity(
-                                    book.bookId,
-                                    parseInt(e.target.value)
-                                )
-                            }
-                        />
-                        <label htmlFor="quantity">amount</label>
-                        <button
-                            disabled={isDisabled}
-                            onClick={() => {
-                                handleChangeQuantity(
-                                    book.bookId,
-                                    parseInt(book.quantity + 1)
-                                );
-                                setTimer(Date.now() + 1000);
-                            }}
-                        >
-                            <RiAddFill />
-                        </button>
-                    </div>
+                <td className="quantity">
+                    <button
+                        disabled={isDisabled}
+                        onClick={() => {
+                            handleChangeQuantity(
+                                book.bookId,
+                                parseInt(book.quantity) - 1 < 1
+                                    ? 1
+                                    : parseInt(book.quantity) - 1
+                            );
+                            setTimer(Date.now() + 500);
+                        }}
+                    >
+                        <RiSubtractFill />
+                    </button>
+                    <input
+                        disabled={isDisabled}
+                        type="quantity"
+                        id="quantity"
+                        min="1"
+                        value={book.quantity}
+                        onBlur={() => updateCart(bookList)}
+                        onChange={(e) =>
+                            handleChangeQuantity(
+                                book.bookId,
+                                parseInt(e.target.value)
+                            )
+                        }
+                    />
+                    <label htmlFor="quantity">amount</label>
+                    <button
+                        disabled={isDisabled}
+                        onClick={() => {
+                            handleChangeQuantity(
+                                book.bookId,
+                                parseInt(book.quantity + 1)
+                            );
+                            setTimer(Date.now() + 500);
+                        }}
+                    >
+                        <RiAddFill />
+                    </button>
                 </td>
                 <td>
                     <p style={{ color: "rgb(230, 0 ,0)" }}>{`$${
@@ -199,18 +187,6 @@ const CartBook = ({ book }) => {
                     </button>
                 </td>
             </tr>
-            <ToastContainer
-                position="bottom-right"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable={false}
-                pauseOnHover={false}
-                theme="dark"
-            />
         </>
     );
 };

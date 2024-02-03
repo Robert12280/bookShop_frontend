@@ -10,7 +10,6 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const BookPage = () => {
     const [quantity, setQuantity] = useState(1);
-    const [isSaveCartError, setIsSaveCartError] = useState(false);
     const navigate = useNavigate();
     const { bookId } = useParams();
     const getBookById = useStoreState((state) => state.getBookById);
@@ -53,9 +52,30 @@ const BookPage = () => {
                     await axiosPrivate.post("/cart", bookList, {
                         signal: controller.signal,
                     });
+                    const toastId = "addCartToastSuccessId";
+                    if (!toast.isActive(toastId)) {
+                        toast.success("已加入購物車", {
+                            toastId: toastId,
+                            autoClose: 1000,
+                        });
+                    } else {
+                        toast.update(toastId, {
+                            autoClose: 1000,
+                        });
+                    }
                 } catch (err) {
                     console.log(`Error: ${err.message}`);
-                    setIsSaveCartError(true);
+                    const toastId = "addCartToastErrorId";
+                    if (!toast.isActive(toastId)) {
+                        toast.error("加入購物車失敗", {
+                            toastId: toastId,
+                            autoClose: 1000,
+                        });
+                    } else {
+                        toast.update(toastId, {
+                            autoClose: 1000,
+                        });
+                    }
                 }
             };
 
@@ -83,33 +103,6 @@ const BookPage = () => {
         };
 
         addBookInCart(bookBuyInfo);
-
-        if (!isSaveCartError) {
-            const toastId = "addCartToastSuccessId";
-            if (!toast.isActive(toastId)) {
-                toast.success("已加入購物車", {
-                    toastId: toastId,
-                    autoClose: 2000,
-                });
-            } else {
-                toast.update(toastId, {
-                    autoClose: 2000,
-                });
-            }
-        } else {
-            const toastId = "addCartToastErrorId";
-            if (!toast.isActive(toastId)) {
-                toast.error("已加入購物車", {
-                    toastId: toastId,
-                    autoClose: 2000,
-                });
-            } else {
-                toast.update(toastId, {
-                    autoClose: 2000,
-                });
-            }
-        }
-        setIsSaveCartError(false);
     };
 
     const handleBuy = () => {

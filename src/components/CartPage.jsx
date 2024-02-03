@@ -2,10 +2,11 @@ import "./CartPage.scss";
 import CartBook from "./CartBook";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import Modal from "react-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 ReactModal.setAppElement("#root");
 
 const CartPage = () => {
@@ -13,30 +14,46 @@ const CartPage = () => {
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const axiosPrivate = useAxiosPrivate();
-    const [isCreateOrderError, setIsCreateOrderError] = useState(false);
+    const [isSaveCartError, setIsSaveCartError] = useState(false);
+    const navigate = useNavigate();
 
     const createOrder = (bookList) => {
         const controller = new AbortController();
 
         const createOrderAxios = async () => {
             try {
-                setIsCreateOrderError(false);
                 await axiosPrivate.post("/order", bookList, {
                     signal: controller.signal,
                 });
-            } catch (err) {
-                setIsCreateOrderError(true);
-                console.log(`Error: ${err.message}`);
-            } finally {
-                if (!isCreateOrderError) {
-                    // 刪除購物車內已購買書
-                    const newCart = bookInCart.filter((book) => !book.active);
-                    setBookInCart(newCart);
+
+                const newCart = bookInCart.filter((book) => !book.active);
+                setBookInCart(newCart);
+
+                const toastId = "createOrderToastSuccessId";
+                if (!toast.isActive(toastId)) {
+                    toast.success("訂單已送出", {
+                        toastId: toastId,
+                        autoClose: 1000,
+                    });
                 } else {
-                    toast.error("訂單送出失敗", {
+                    toast.update(toastId, {
                         autoClose: 1000,
                     });
                 }
+                navigate("/orders");
+            } catch (err) {
+                const toastId = "createOrderToastErrorId";
+                if (!toast.isActive(toastId)) {
+                    toast.error("訂單送出失敗", {
+                        toastId: toastId,
+                        autoClose: 1000,
+                    });
+                } else {
+                    toast.update(toastId, {
+                        autoClose: 1000,
+                    });
+                }
+                console.log(`Error: ${err.message}`);
             }
         };
 
@@ -61,6 +78,23 @@ const CartPage = () => {
             setModalIsOpen(true);
         }
     };
+
+    useEffect(() => {
+        if (isSaveCartError) {
+            const toastId = "updateCartToastErrorId";
+            if (!toast.isActive(toastId)) {
+                toast.error("購物車更改失敗", {
+                    toastId: toastId,
+                    autoClose: 1000,
+                });
+            } else {
+                toast.update(toastId, {
+                    autoClose: 1000,
+                });
+            }
+            setIsSaveCartError(false);
+        }
+    }, [isSaveCartError]);
 
     return (
         <main className="cartPage">
@@ -88,7 +122,11 @@ const CartPage = () => {
                         </thead>
                         <tbody>
                             {bookInCart.map((book) => (
-                                <CartBook book={book} key={book.bookId} />
+                                <CartBook
+                                    book={book}
+                                    setIsSaveCartError={setIsSaveCartError}
+                                    key={book.bookId}
+                                />
                             ))}
                         </tbody>
                     </table>

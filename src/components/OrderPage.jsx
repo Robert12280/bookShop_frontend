@@ -20,7 +20,12 @@ const OrderPage = () => {
                     const response = await axiosPrivate.get("/order", {
                         signal: controller.signal,
                     });
-                    setOrders(response.data);
+                    setOrders(
+                        response.data.sort(
+                            (a, b) =>
+                                new Date(b.createdAt) - new Date(a.createdAt)
+                        )
+                    );
                 } catch (err) {
                     console.log(`Error: ${err.message}`);
                     setOrderFetchErrorMsg(err.message);
@@ -53,9 +58,28 @@ const OrderPage = () => {
                     <p>您目前沒有訂單</p>
                 ))}
             {!isOrderLoading && orderFetchErrorMsg && (
-                <p>{orderFetchErrorMsg}</p>
+                <p
+                    style={{
+                        backgroundColor: "white",
+                        color: "red",
+                        width: "100%",
+                        textAlign: "center",
+                    }}
+                >
+                    {orderFetchErrorMsg}
+                </p>
             )}
-            {isOrderLoading && <p>Loading...</p>}
+            {isOrderLoading && (
+                <p
+                    style={{
+                        backgroundColor: "white",
+                        width: "100%",
+                        textAlign: "center",
+                    }}
+                >
+                    Loading...
+                </p>
+            )}
         </main>
     );
 };
