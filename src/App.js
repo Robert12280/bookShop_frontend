@@ -66,19 +66,19 @@ function App() {
                     {/* Publice */}
                     <Route path="login" Component={LoginPage} />
                     <Route path="register" Component={RegisterPage} />
+                    <Route
+                        path="/"
+                        element={
+                            <Home
+                                isBookLoading={isBookLoading}
+                                bookFetchError={bookFetchError}
+                                isCartLoading={isCartLoading}
+                            />
+                        }
+                    />
 
                     {/* Private */}
                     <Route Component={PersistLogin}>
-                        <Route
-                            path="/"
-                            element={
-                                <Home
-                                    isBookLoading={isBookLoading}
-                                    bookFetchError={bookFetchError}
-                                    isCartLoading={isCartLoading}
-                                />
-                            }
-                        />
                         <Route Component={RequireAuth}>
                             <Route path="cart" Component={CartPage} />
                         </Route>

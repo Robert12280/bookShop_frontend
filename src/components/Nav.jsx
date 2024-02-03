@@ -37,6 +37,7 @@ const Nav = () => {
     const isRegisterPage = pathname === "/register";
     const isCartPage = /^\/cart(\/)?$/.test(pathname);
     const isBookPage = /^\/book\/\d+(\/)?$/.test(pathname);
+    const isOrderPage = /^\/orders(\/)?$/.test(pathname);
 
     const [userBtnIsActive, setUserBtnIsActive] = useState(false);
     const [username, setUsername] = useState(null);
@@ -88,46 +89,52 @@ const Nav = () => {
                     {isCartPage && <h2>購物車</h2>}
                     {isLoginPage && <h2>登入</h2>}
                     {isRegisterPage && <h2>註冊</h2>}
+                    {isOrderPage && <h2>訂單</h2>}
                 </div>
 
-                {!isLoginPage && !isRegisterPage && !isCartPage && (
-                    <form
-                        className="navForm"
-                        onSubmit={(e) => e.preventDefault()}
-                    >
-                        {!isBookPage && (
-                            <>
-                                <label htmlFor="search">Search</label>
-                                <input
-                                    type="text"
-                                    id="search"
-                                    role="searchbox"
-                                    placeholder="Search Books"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
-                            </>
-                        )}
-                        {token && (
-                            <div className="cartBtn">
-                                <Link to={"/cart"}>
-                                    <FaShoppingCart />
-                                </Link>
-                                {bookInCart.length && (
-                                    <span className="prodAmount">
-                                        <p>{bookInCart.length}</p>
-                                    </span>
-                                )}
-                            </div>
-                        )}
+                {!isLoginPage &&
+                    !isRegisterPage &&
+                    !isCartPage &&
+                    !isOrderPage && (
+                        <form
+                            className="navForm"
+                            onSubmit={(e) => e.preventDefault()}
+                        >
+                            {!isBookPage && (
+                                <>
+                                    <label htmlFor="search">Search</label>
+                                    <input
+                                        type="text"
+                                        id="search"
+                                        role="searchbox"
+                                        placeholder="Search Books"
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                    />
+                                </>
+                            )}
+                            {token && (
+                                <div className="cartBtn">
+                                    <Link to={"/cart"}>
+                                        <FaShoppingCart />
+                                    </Link>
+                                    {bookInCart.length && (
+                                        <span className="prodAmount">
+                                            <p>{bookInCart.length}</p>
+                                        </span>
+                                    )}
+                                </div>
+                            )}
 
-                        {!token && (
-                            <Link className="signInBtn" to={"/login"}>
-                                Sign in
-                            </Link>
-                        )}
-                    </form>
-                )}
+                            {!token && (
+                                <Link className="signInBtn" to={"/login"}>
+                                    Sign in
+                                </Link>
+                            )}
+                        </form>
+                    )}
                 {token && (
                     <>
                         <div
