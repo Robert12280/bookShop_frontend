@@ -48,3 +48,45 @@
         }
     }
 }
+.Modal {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+    background-color: white;
+    max-width: 500px;
+    max-height: 300px;
+    margin: auto;
+    border: none;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    button {
+        min-width: 6rem;
+        margin-top: 4rem;
+        padding: 0.7rem 1rem;
+        background-color: #fd6a01;
+        color: white;
+        font-weight: bold;
+        border: 1px solid #fd6a01;
+
+        &:hover {
+            cursor: pointer;
+            background-color: #fb7e25;
+        }
+    }
+}
+
+.Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}

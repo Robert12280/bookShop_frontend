@@ -1,0 +1,88 @@
+.orderContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1rem;
+    margin: 3rem 0;
+    width: 100%;
+    background-color: white;
+
+    .top {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .orderNum {
+            flex: 1;
+            display: flex;
+            justify-content: flex-start;
+            color: #747474;
+            font-size: 0.6rem;
+        }
+
+        .deliveryStatus {
+            display: flex;
+            align-items: center;
+            padding-right: 0.7rem;
+            color: rgb(81, 167, 125);
+            p {
+                font-size: 0.7rem;
+            }
+            svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        .orderStatus {
+            border-left: 1px solid #ccc;
+            padding-left: 0.7rem;
+            font-size: 0.7rem;
+            color: rgb(255, 106, 0);
+        }
+    }
+
+    .mid {
+        ul {
+            li {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 1rem 0;
+                border-bottom: 1px solid #ccc;
+                .imgContainer {
+                    width: 4rem;
+                    height: 4rem;
+                    margin-right: 2rem;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+
+                .bookInfoContainer {
+                    h2 {
+                        font-size: 0.7rem;
+                    }
+                    p {
+                        font-size: 0.7rem;
+                    }
+                }
+
+                .singlePrice {
+                    min-width: 5rem;
+                    flex: 1;
+                    display: flex;
+                    justify-content: flex-end;
+                    p {
+                        font-size: 0.7rem;
+                    }
+                }
+            }
+        }
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+}

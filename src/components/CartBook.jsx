@@ -49,7 +49,6 @@ const CartBook = ({ book }) => {
         if (!QUANTITY_REGEX.test(quantity)) quantity = book.quantity;
         const myBook = bookInCart.find((book) => book.bookId === bookId);
         myBook.quantity = quantity;
-        myBook.totalPrice = myBook.quantity * myBook.price;
 
         const newBookInCart = [
             ...bookInCart.filter((book) => book.bookId !== bookId),
@@ -62,7 +61,6 @@ const CartBook = ({ book }) => {
                 book: item.book,
                 active: item.active,
                 quantity: item.quantity,
-                totalPrice: item.totalPrice,
             }))
         );
     };
@@ -77,7 +75,6 @@ const CartBook = ({ book }) => {
             book: item.book,
             active: item.active,
             quantity: item.quantity,
-            totalPrice: item.totalPrice,
         }));
 
         updateCart(bookList);
@@ -98,7 +95,6 @@ const CartBook = ({ book }) => {
             book: item.book,
             active: item.active,
             quantity: item.quantity,
-            totalPrice: item.totalPrice,
         }));
 
         updateCart(bookList);
@@ -190,9 +186,9 @@ const CartBook = ({ book }) => {
                     </div>
                 </td>
                 <td>
-                    <p
-                        style={{ color: "rgb(230, 0 ,0)" }}
-                    >{`$${book.totalPrice}`}</p>
+                    <p style={{ color: "rgb(230, 0 ,0)" }}>{`$${
+                        book.price * book.quantity
+                    }`}</p>
                 </td>
                 <td>
                     <button

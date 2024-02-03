@@ -14,6 +14,7 @@ import { useStoreActions } from "easy-peasy";
 import Missing from "./components/Missing";
 import Layout from "./components/Layout";
 import useAxiosPrivate from "./hooks/useAxiosPrivate";
+import OrderPage from "./components/OrderPage";
 
 function App() {
     const [isCartLoading, setIsCartLoading] = useState(false);
@@ -86,6 +87,7 @@ function App() {
                                 path="book/:bookId"
                                 Component={BookPage}
                             ></Route>
+                            <Route path="orders" Component={OrderPage}></Route>
                         </Route>
                     </Route>
 

@@ -38,10 +38,6 @@ export default createStore({
     setBookInCart: action((state, payload) => {
         state.bookInCart = payload;
     }),
-    order: [],
-    setOrder: action((state, payload) => {
-        state.order = payload;
-    }),
     token: null,
     setToken: action((state, payload) => {
         state.token = payload;

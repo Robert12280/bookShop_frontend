@@ -1,0 +1,14 @@
+.orderPage {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+
+    .allOrders {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        flex-direction: column;
+    }
+}
