@@ -11,6 +11,7 @@ ReactModal.setAppElement("#root");
 
 const CartPage = () => {
     const isCartLoading = useStoreState((state) => state.isCartLoading);
+    const getCartErrMsg = useStoreState((state) => state.getCartErrMsg);
     const bookInCart = useStoreState((state) => state.bookInCart);
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -100,6 +101,7 @@ const CartPage = () => {
     return (
         <main className="cartPage">
             {!isCartLoading &&
+                !getCartErrMsg &&
                 (bookInCart.length ? (
                     <>
                         <Modal
@@ -154,6 +156,9 @@ const CartPage = () => {
                 ) : (
                     <p>您的購物車是空的～</p>
                 ))}
+            {!isCartLoading && getCartErrMsg && (
+                <p style={{ color: "red" }}>{getCartErrMsg}</p>
+            )}
             {isCartLoading && <p>Loading...</p>}
             <ToastContainer
                 position="bottom-right"

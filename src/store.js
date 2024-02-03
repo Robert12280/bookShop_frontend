@@ -58,6 +58,10 @@ export default createStore({
     setIsCartLoading: action((state, payload) => {
         state.isLoading = payload;
     }),
+    getCartErrMsg: null,
+    setGetCartErrMsg: action((state, payload) => {
+        state.getCartErrMsg = payload;
+    }),
     isLogoutSuccess: false,
     setIsLogoutSuccess: action((state, payload) => {
         state.isLogoutSuccess = payload;

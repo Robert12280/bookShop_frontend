@@ -20,6 +20,9 @@ function App() {
     const setIsCartLoading = useStoreActions(
         (actions) => actions.setIsCartLoading
     );
+    const setGetCartErrMsg = useStoreActions(
+        (actions) => actions.setGetCartErrMsg
+    );
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const setBooks = useStoreActions((actions) => actions.setBooks);
     const { bookData, bookFetchError, isBookLoading } = useAxiosFetch("books");
@@ -41,7 +44,9 @@ function App() {
                         signal: controller.signal,
                     });
                     setBookInCart(response.data);
+                    setGetCartErrMsg(null);
                 } catch (err) {
+                    setGetCartErrMsg(err.message);
                     console.log(`Error: ${err.message}`);
                 } finally {
                     setTimeout(() => {
