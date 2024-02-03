@@ -65,7 +65,7 @@ function App() {
                     <Route path="login" Component={LoginPage} />
                     <Route path="register" Component={RegisterPage} />
                     <Route
-                        path="/"
+                        index
                         element={
                             <Home
                                 isBookLoading={isBookLoading}
