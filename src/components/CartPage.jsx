@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 ReactModal.setAppElement("#root");
 
 const CartPage = () => {
+    const isCartLoading = useStoreState((state) => state.isCartLoading);
     const bookInCart = useStoreState((state) => state.bookInCart);
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -98,58 +99,62 @@ const CartPage = () => {
 
     return (
         <main className="cartPage">
-            {bookInCart.length ? (
-                <>
-                    <Modal
-                        isOpen={modalIsOpen}
-                        className="Modal"
-                        overlayClassName="Overlay"
-                    >
-                        <p>請勾選商品再送出</p>
-                        <button onClick={() => setModalIsOpen(false)}>
-                            好
-                        </button>
-                    </Modal>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>商品</td>
-                                <td>單價</td>
-                                <td>數量</td>
-                                <td>總計</td>
-                                <td>操作</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {bookInCart.map((book) => (
-                                <CartBook
-                                    book={book}
-                                    setIsSaveCartError={setIsSaveCartError}
-                                    key={book.bookId}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                    <form
-                        className="submitOrder"
-                        onSubmit={(e) => e.preventDefault()}
-                    >
-                        <p>
-                            {`總金額(${bookInCart.length}個商品)：`}
-                            <span
-                                style={{ color: "rgb(230, 0 ,0)" }}
-                            >{`$${bookInCart
-                                .filter((book) => book.active)
-                                .reduce((price, book) => {
-                                    return price + book.price * book.quantity;
-                                }, 0)}`}</span>
-                        </p>
-                        <button onClick={handleSubmit}>送出訂單</button>
-                    </form>
-                </>
-            ) : (
-                <p>您的購物車是空的～</p>
-            )}
+            {!isCartLoading &&
+                (bookInCart.length ? (
+                    <>
+                        <Modal
+                            isOpen={modalIsOpen}
+                            className="Modal"
+                            overlayClassName="Overlay"
+                        >
+                            <p>請勾選商品再送出</p>
+                            <button onClick={() => setModalIsOpen(false)}>
+                                好
+                            </button>
+                        </Modal>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>商品</td>
+                                    <td>單價</td>
+                                    <td>數量</td>
+                                    <td>總計</td>
+                                    <td>操作</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {bookInCart.map((book) => (
+                                    <CartBook
+                                        book={book}
+                                        setIsSaveCartError={setIsSaveCartError}
+                                        key={book.bookId}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
+                        <form
+                            className="submitOrder"
+                            onSubmit={(e) => e.preventDefault()}
+                        >
+                            <p>
+                                {`總金額(${bookInCart.length}個商品)：`}
+                                <span
+                                    style={{ color: "rgb(230, 0 ,0)" }}
+                                >{`$${bookInCart
+                                    .filter((book) => book.active)
+                                    .reduce((price, book) => {
+                                        return (
+                                            price + book.price * book.quantity
+                                        );
+                                    }, 0)}`}</span>
+                            </p>
+                            <button onClick={handleSubmit}>送出訂單</button>
+                        </form>
+                    </>
+                ) : (
+                    <p>您的購物車是空的～</p>
+                ))}
+            {isCartLoading && <p>Loading...</p>}
             <ToastContainer
                 position="bottom-right"
                 autoClose={2000}

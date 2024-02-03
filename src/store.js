@@ -54,8 +54,8 @@ export default createStore({
     setRegisterErrMsg: action((state, payload) => {
         state.registerErrMsg = payload;
     }),
-    isLoading: false,
-    setIsLoading: action((state, payload) => {
+    isCartLoading: false,
+    setIsCartLoading: action((state, payload) => {
         state.isLoading = payload;
     }),
     isLogoutSuccess: false,

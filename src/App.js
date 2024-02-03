@@ -10,14 +10,16 @@ import BookPage from "./components/BookPage";
 import PersistLogin from "./components/PersistLogin";
 import RequireAuth from "./components/RequireAuth";
 import useAxiosFetch from "./hooks/useAxiosFetch";
-import { useStoreActions } from "easy-peasy";
+import { useStoreActions, useStoreState } from "easy-peasy";
 import Missing from "./components/Missing";
 import Layout from "./components/Layout";
 import useAxiosPrivate from "./hooks/useAxiosPrivate";
 import OrderPage from "./components/OrderPage";
 
 function App() {
-    const [isCartLoading, setIsCartLoading] = useState(false);
+    const setIsCartLoading = useStoreActions(
+        (actions) => actions.setIsCartLoading
+    );
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const setBooks = useStoreActions((actions) => actions.setBooks);
     const { bookData, bookFetchError, isBookLoading } = useAxiosFetch("books");
@@ -29,12 +31,12 @@ function App() {
 
     // Get cart
     useEffect(() => {
-        setIsCartLoading(true);
         const getCartFromDatabase = () => {
             const controller = new AbortController();
 
             const getCart = async () => {
                 try {
+                    setIsCartLoading(true);
                     const response = await axiosPrivate.get("/cart", {
                         signal: controller.signal,
                     });
@@ -42,7 +44,9 @@ function App() {
                 } catch (err) {
                     console.log(`Error: ${err.message}`);
                 } finally {
-                    setIsCartLoading(false);
+                    setTimeout(() => {
+                        setIsCartLoading(false);
+                    }, 2000);
                 }
             };
 
@@ -70,7 +74,6 @@ function App() {
                             <Home
                                 isBookLoading={isBookLoading}
                                 bookFetchError={bookFetchError}
-                                isCartLoading={isCartLoading}
                             />
                         }
                     />
