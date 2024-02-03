@@ -20,9 +20,7 @@ function App() {
     const [isCartLoading, setIsCartLoading] = useState(false);
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const setBooks = useStoreActions((actions) => actions.setBooks);
-    const { bookData, bookFetchError, isBookLoading } = useAxiosFetch(
-        "http://localhost:3500/books"
-    );
+    const { bookData, bookFetchError, isBookLoading } = useAxiosFetch("books");
     const axiosPrivate = useAxiosPrivate();
 
     useEffect(() => {
