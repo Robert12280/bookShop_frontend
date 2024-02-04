@@ -80,10 +80,7 @@ const RegisterPage = () => {
                     </Link>
                 </section>
             ) : (
-                <form
-                    className="registerForm"
-                    onSubmit={(e) => e.preventDefault()}
-                >
+                <form className="registerForm" onSubmit={handleSubmit}>
                     <label htmlFor="username">使用者名稱</label>
                     <input
                         ref={userRef}
@@ -145,12 +142,7 @@ const RegisterPage = () => {
                             {registerErrMsg}
                         </p>
                     )}
-                    <input
-                        type="submit"
-                        id="submit"
-                        value="註冊"
-                        onClick={handleSubmit}
-                    />
+                    <input type="submit" id="submit" value="註冊" />
                     <p>
                         已經有帳號了嗎？請點擊<Link to="/login">登入</Link>
                     </p>

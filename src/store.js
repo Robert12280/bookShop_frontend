@@ -86,8 +86,13 @@ export default createStore({
                 actions.setIsRegisterSuccess(true);
             }
         } catch (err) {
-            console.log(`Error: ${err.message}`);
-            actions.setRegisterErrMsg(err.message);
+            if (!err.response.status) {
+                actions.setRegisterErrMsg("No Server Response");
+            } else if (err.response.status === 400) {
+                actions.setRegisterErrMsg("請確認欄位格式皆正確");
+            } else if (err.response.status === 409) {
+                actions.setRegisterErrMsg("使用者名稱或電子信箱已被使用");
+            }
         } finally {
             actions.setIsLoading(false);
         }
@@ -104,7 +109,7 @@ export default createStore({
             if (!err.response.status) {
                 actions.setLoginErrMsg("No Server Response");
             } else if (err.response.status === 400) {
-                actions.setLoginErrMsg("Missing Username of Password");
+                actions.setLoginErrMsg("請確認所有欄位都已填寫");
             } else if (err.response.status === 401) {
                 actions.setLoginErrMsg("使用者名稱或密碼錯誤");
             }

@@ -14,6 +14,12 @@ const Home = ({ isBookLoading, bookFetchError }) => {
     const setFilterResults = useStoreActions(
         (actions) => actions.setFilterResults
     );
+    const logoutErrMsg = useStoreState((state) => state.logoutErrMsg);
+
+    const setLogoutErrMsg = useStoreActions(
+        (actions) => actions.setLogoutErrMsg
+    );
+    const isLogoutLoading = useStoreState((state) => state.isLogoutLoading);
 
     useEffect(() => {
         // Filter books type
@@ -40,10 +46,20 @@ const Home = ({ isBookLoading, bookFetchError }) => {
         setFilterResults,
     ]);
 
+    if (isLogoutLoading)
+        return <p style={{ marginTop: "10rem" }}>logging out...</p>;
+
+    if (logoutErrMsg) {
+        const err = logoutErrMsg;
+        setLogoutErrMsg("");
+        return <p style={{ marginTop: "10rem" }}>{err}</p>;
+    }
+
+    if (isBookLoading || isCartLoading) return <p>Loading...</p>;
+
     return (
         <main className="home">
-            {(isBookLoading || isCartLoading) && <p>Loading...</p>}
-            {!isBookLoading && !isCartLoading && bookFetchError && (
+            {bookFetchError && (
                 <p
                     style={{
                         color: "red",
@@ -52,7 +68,7 @@ const Home = ({ isBookLoading, bookFetchError }) => {
                     {bookFetchError}
                 </p>
             )}
-            {!isBookLoading && !isCartLoading && !bookFetchError && (
+            {!bookFetchError && (
                 <>
                     <FilterList />
                     {filterResults.length ? (

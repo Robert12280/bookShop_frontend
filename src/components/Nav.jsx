@@ -19,14 +19,6 @@ const Nav = () => {
 
     const token = useStoreState((state) => state.token);
 
-    const logoutErrMsg = useStoreState((state) => state.logoutErrMsg);
-
-    const setLogoutErrMsg = useStoreActions(
-        (actions) => actions.setLogoutErrMsg
-    );
-
-    const isLogoutLoading = useStoreState((state) => state.isLogoutLoading);
-
     const { pathname } = useLocation();
 
     const isLoginPage = pathname === "/login";
@@ -52,15 +44,6 @@ const Nav = () => {
             setUsername(decodedToken.UserInfo.username);
         }
     }, [token]);
-
-    if (isLogoutLoading)
-        return <p style={{ marginTop: "10rem" }}>Loading...</p>;
-
-    if (logoutErrMsg) {
-        const err = logoutErrMsg;
-        setLogoutErrMsg("");
-        return <p style={{ marginTop: "10rem" }}>{err}</p>;
-    }
 
     const handleLogout = async () => {
         await logoutPost();
