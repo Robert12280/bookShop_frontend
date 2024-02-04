@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import CartPage from "./components/CartPage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import BookPage from "./components/BookPage";
 import PersistLogin from "./components/PersistLogin";
 import RequireAuth from "./components/RequireAuth";
@@ -17,6 +17,7 @@ import useAxiosPrivate from "./hooks/useAxiosPrivate";
 import OrderPage from "./components/OrderPage";
 
 function App() {
+    const token = useStoreState((state) => state.token);
     const setIsCartLoading = useStoreActions(
         (actions) => actions.setIsCartLoading
     );
@@ -63,7 +64,7 @@ function App() {
         };
 
         getCartFromDatabase();
-    }, [axiosPrivate]);
+    }, [axiosPrivate, token]);
 
     return (
         <div className="App">

@@ -11,7 +11,6 @@ const Home = ({ isBookLoading, bookFetchError }) => {
     const filterMinYear = useStoreState((state) => state.filterMinYear);
     const filterMaxYear = useStoreState((state) => state.filterMaxYear);
     const isCartLoading = useStoreState((state) => state.isCartLoading);
-    const getCartErrMsg = useStoreState((state) => state.getCartErrMsg);
     const setFilterResults = useStoreActions(
         (actions) => actions.setFilterResults
     );
@@ -44,41 +43,27 @@ const Home = ({ isBookLoading, bookFetchError }) => {
     return (
         <main className="home">
             {(isBookLoading || isCartLoading) && <p>Loading</p>}
-            {!isBookLoading &&
-                !isCartLoading &&
-                (bookFetchError || getCartErrMsg) && (
-                    <div>
-                        <p
-                            style={{
-                                color: "red",
-                            }}
-                        >
-                            {bookFetchError}
-                        </p>
-                        <p
-                            style={{
-                                color: "red",
-                            }}
-                        >
-                            {getCartErrMsg}
-                        </p>
-                    </div>
-                )}
-            {!isBookLoading &&
-                !isCartLoading &&
-                !bookFetchError &&
-                !getCartErrMsg && (
-                    <>
-                        <FilterList />
-                        {filterResults.length ? (
-                            <BookList />
-                        ) : (
-                            <div className="noDisplay">
-                                <p>No books to display.</p>
-                            </div>
-                        )}
-                    </>
-                )}
+            {!isBookLoading && !isCartLoading && bookFetchError && (
+                <p
+                    style={{
+                        color: "red",
+                    }}
+                >
+                    {bookFetchError}
+                </p>
+            )}
+            {!isBookLoading && !isCartLoading && !bookFetchError && (
+                <>
+                    <FilterList />
+                    {filterResults.length ? (
+                        <BookList />
+                    ) : (
+                        <div className="noDisplay">
+                            <p>No books to display.</p>
+                        </div>
+                    )}
+                </>
+            )}
         </main>
     );
 };
