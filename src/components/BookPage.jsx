@@ -45,7 +45,6 @@ const BookPage = () => {
         }));
 
         const updateCart = () => {
-            console.log(isBuy);
             const controller = new AbortController();
 
             const updateCartAxios = async () => {
