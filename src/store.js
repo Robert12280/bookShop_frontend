@@ -74,6 +74,10 @@ export default createStore({
     setGetCartErrMsg: action((state, payload) => {
         state.getCartErrMsg = payload;
     }),
+    isRefreshSuccess: false,
+    setIsRefreshSuccess: action((state, payload) => {
+        state.isRefreshSuccess = payload;
+    }),
     getBookById: computed((state) => {
         return (bookId) =>
             state.books.find((book) => book.bookId.toString() === bookId);

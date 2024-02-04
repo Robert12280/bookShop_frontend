@@ -1,7 +1,7 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { useStoreState } from "easy-peasy";
 
-const RequireAuth = ({ allowedRoles }) => {
+const RequireAuth = () => {
     const token = useStoreState((state) => state.token);
     const location = useLocation();
 

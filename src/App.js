@@ -18,6 +18,7 @@ import OrderPage from "./components/OrderPage";
 
 function App() {
     const token = useStoreState((state) => state.token);
+    const isRefreshSuccess = useStoreState((state) => state.isRefreshSuccess);
     const setIsCartLoading = useStoreActions(
         (actions) => actions.setIsCartLoading
     );
@@ -35,6 +36,8 @@ function App() {
 
     // Get cart
     useEffect(() => {
+        console.log("isajdijasdi");
+        console.log(token);
         if (token) {
             const getCartFromDatabase = () => {
                 const controller = new AbortController();
@@ -64,7 +67,7 @@ function App() {
 
             getCartFromDatabase();
         }
-    }, [axiosPrivate]);
+    }, [axiosPrivate, isRefreshSuccess]);
 
     return (
         <div className="App">
