@@ -1,12 +1,13 @@
 import "./Nav.scss";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useStoreState, useStoreActions } from "easy-peasy";
 import { jwtDecode } from "jwt-decode";
 
 const Nav = () => {
+    const navigate = useNavigate();
     const books = useStoreState((state) => state.books);
     const search = useStoreState((state) => state.search);
     const bookInCart = useStoreState((state) => state.bookInCart);
@@ -18,20 +19,15 @@ const Nav = () => {
 
     const token = useStoreState((state) => state.token);
 
-    const isLogoutSuccess = useStoreState((state) => state.isLogoutSuccess);
-    const setIsLogoutSuccess = useStoreActions(
-        (actions) => actions.setIsLogoutSuccess
-    );
     const logoutErrMsg = useStoreState((state) => state.logoutErrMsg);
 
     const setLogoutErrMsg = useStoreActions(
         (actions) => actions.setLogoutErrMsg
     );
 
-    const [isLoading, setIsLoading] = useState(false);
+    const isLogoutLoading = useStoreState((state) => state.isLogoutLoading);
 
     const { pathname } = useLocation();
-    const navigate = useNavigate();
 
     const isLoginPage = pathname === "/login";
     const isRegisterPage = pathname === "/register";
@@ -51,20 +47,14 @@ const Nav = () => {
     }, [books, search, setSearchResults]);
 
     useEffect(() => {
-        if (isLogoutSuccess) {
-            navigate("/");
-            setIsLogoutSuccess(false);
-        }
-    }, [setIsLogoutSuccess, isLogoutSuccess, navigate]);
-
-    useEffect(() => {
         if (token) {
             const decodedToken = jwtDecode(token);
             setUsername(decodedToken.UserInfo.username);
         }
     }, [token]);
 
-    if (isLoading) return <p style={{ marginTop: "10rem" }}>Logging Out...</p>;
+    if (isLogoutLoading)
+        return <p style={{ marginTop: "10rem" }}>Loading...</p>;
 
     if (logoutErrMsg) {
         const err = logoutErrMsg;
@@ -73,10 +63,8 @@ const Nav = () => {
     }
 
     const handleLogout = async () => {
-        setIsLoading(true);
-        logoutPost();
-        setIsLoading(false);
-        window.location.reload();
+        await logoutPost();
+        navigate("/");
     };
 
     return (

@@ -42,33 +42,37 @@ export default createStore({
     setToken: action((state, payload) => {
         state.token = payload;
     }),
-    loginErrMsg: "",
+    loginErrMsg: null,
     setLoginErrMsg: action((state, payload) => {
         state.loginErrMsg = payload;
     }),
-    logoutErrMsg: "",
+    logoutErrMsg: null,
     setLogoutErrMsg: action((state, payload) => {
         state.logoutErrMsg = payload;
     }),
-    registerErrMsg: "",
+    registerErrMsg: null,
     setRegisterErrMsg: action((state, payload) => {
         state.registerErrMsg = payload;
-    }),
-    isCartLoading: false,
-    setIsCartLoading: action((state, payload) => {
-        state.isLoading = payload;
-    }),
-    getCartErrMsg: null,
-    setGetCartErrMsg: action((state, payload) => {
-        state.getCartErrMsg = payload;
-    }),
-    isLogoutSuccess: false,
-    setIsLogoutSuccess: action((state, payload) => {
-        state.isLogoutSuccess = payload;
     }),
     isRegisterSuccess: false,
     setIsRegisterSuccess: action((state, payload) => {
         state.isRegisterSuccess = payload;
+    }),
+    isCartLoading: false,
+    setIsCartLoading: action((state, payload) => {
+        state.isCartLoading = payload;
+    }),
+    isLoading: false,
+    setIsLoading: action((state, payload) => {
+        state.isLoading = payload;
+    }),
+    isLogoutLoading: false,
+    setIsLogoutLoading: action((state, payload) => {
+        state.isLogoutLoading = payload;
+    }),
+    getCartErrMsg: null,
+    setGetCartErrMsg: action((state, payload) => {
+        state.getCartErrMsg = payload;
     }),
     getBookById: computed((state) => {
         return (bookId) =>
@@ -78,8 +82,9 @@ export default createStore({
         try {
             actions.setIsLoading(true);
             const response = await axios.post("/client/register", user);
-            console.log(response);
-            actions.setIsRegisterSuccess(true);
+            if (response) {
+                actions.setIsRegisterSuccess(true);
+            }
         } catch (err) {
             console.log(`Error: ${err.message}`);
             actions.setRegisterErrMsg(err.message);
@@ -89,6 +94,7 @@ export default createStore({
     }),
     loginPost: thunk(async (actions, user, helpers) => {
         try {
+            actions.setIsLoading(true);
             const response = await axios.post("/client/login", user, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
@@ -102,16 +108,20 @@ export default createStore({
             } else if (err.response.status === 401) {
                 actions.setLoginErrMsg("使用者名稱或密碼錯誤");
             }
+        } finally {
+            actions.setIsLoading(false);
         }
     }),
     logoutPost: thunk(async (actions) => {
         try {
+            actions.setIsLogoutLoading(true);
             await axios.post("/client/logout", null, { withCredentials: true });
-            actions.setIsLogoutSuccess(true);
             actions.setToken(null);
         } catch (err) {
             actions.setLogoutErrMsg(`Error: ${err.message}`);
             console.log(`Error: ${err.message}`);
+        } finally {
+            actions.setIsLogoutLoading(false);
         }
     }),
 });

@@ -9,7 +9,7 @@ const LoginPage = () => {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const isLoading = useStoreState((state) => state.isLoading);
     const loginErrMsg = useStoreState((state) => state.loginErrMsg);
     const setLoginErrMsg = useStoreActions((actions) => actions.setLoginErrMsg);
 
@@ -30,9 +30,7 @@ const LoginPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setIsLoading(true);
         loginPost({ username, password });
-        setIsLoading(false);
     };
 
     if (isLoading) return <p style={{ marginTop: "10rem" }}>Loading...</p>;

@@ -35,35 +35,35 @@ function App() {
 
     // Get cart
     useEffect(() => {
-        const getCartFromDatabase = () => {
-            const controller = new AbortController();
+        if (token) {
+            const getCartFromDatabase = () => {
+                const controller = new AbortController();
 
-            const getCart = async () => {
-                try {
-                    setIsCartLoading(true);
-                    const response = await axiosPrivate.get("/cart", {
-                        signal: controller.signal,
-                    });
-                    setBookInCart(response.data);
-                    setGetCartErrMsg(null);
-                } catch (err) {
-                    setGetCartErrMsg(err.message);
-                    console.log(`Error: ${err.message}`);
-                } finally {
-                    setTimeout(() => {
+                const getCart = async () => {
+                    try {
+                        setIsCartLoading(true);
+                        const response = await axiosPrivate.get("/cart", {
+                            signal: controller.signal,
+                        });
+                        setBookInCart(response.data);
+                        setGetCartErrMsg(null);
+                    } catch (err) {
+                        setGetCartErrMsg(err.message);
+                        console.log(`Error: ${err.message}`);
+                    } finally {
                         setIsCartLoading(false);
-                    }, 2000);
-                }
+                    }
+                };
+
+                getCart();
+
+                return () => {
+                    controller.abort();
+                };
             };
 
-            getCart();
-
-            return () => {
-                controller.abort();
-            };
-        };
-
-        getCartFromDatabase();
+            getCartFromDatabase();
+        }
     }, [axiosPrivate, token]);
 
     return (
@@ -74,18 +74,18 @@ function App() {
                     {/* Publice */}
                     <Route path="login" Component={LoginPage} />
                     <Route path="register" Component={RegisterPage} />
-                    <Route
-                        index
-                        element={
-                            <Home
-                                isBookLoading={isBookLoading}
-                                bookFetchError={bookFetchError}
-                            />
-                        }
-                    />
 
                     {/* Private */}
                     <Route Component={PersistLogin}>
+                        <Route
+                            index
+                            element={
+                                <Home
+                                    isBookLoading={isBookLoading}
+                                    bookFetchError={bookFetchError}
+                                />
+                            }
+                        />
                         <Route Component={RequireAuth}>
                             <Route path="cart" Component={CartPage} />
                         </Route>

@@ -42,7 +42,7 @@ const Home = ({ isBookLoading, bookFetchError }) => {
 
     return (
         <main className="home">
-            {(isBookLoading || isCartLoading) && <p>Loading</p>}
+            {(isBookLoading || isCartLoading) && <p>Loading...</p>}
             {!isBookLoading && !isCartLoading && bookFetchError && (
                 <p
                     style={{

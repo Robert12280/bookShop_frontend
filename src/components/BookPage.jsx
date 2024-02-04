@@ -18,7 +18,7 @@ const BookPage = () => {
     const setBookInCart = useStoreActions((actions) => actions.setBookInCart);
     const axiosPrivate = useAxiosPrivate();
 
-    const addBookInCart = (bookBuyInfo) => {
+    const addBookInCart = (bookBuyInfo, isBuy) => {
         // check book has already in cart
         bookBuyInfo.bookId = parseInt(bookBuyInfo.bookId);
         const isBookExist = bookInCart.find(
@@ -45,6 +45,7 @@ const BookPage = () => {
         }));
 
         const updateCart = () => {
+            console.log(isBuy);
             const controller = new AbortController();
 
             const updateCartAxios = async () => {
@@ -52,6 +53,9 @@ const BookPage = () => {
                     await axiosPrivate.post("/cart", bookList, {
                         signal: controller.signal,
                     });
+
+                    setBookInCart(newBookInCart);
+
                     const toastId = "addCartToastSuccessId";
                     if (!toast.isActive(toastId)) {
                         toast.success("已加入購物車", {
@@ -63,6 +67,8 @@ const BookPage = () => {
                             autoClose: 1000,
                         });
                     }
+
+                    if (isBuy) navigate("/cart");
                 } catch (err) {
                     console.log(`Error: ${err.message}`);
                     const toastId = "addCartToastErrorId";
@@ -87,7 +93,6 @@ const BookPage = () => {
         };
 
         updateCart();
-        setBookInCart(newBookInCart);
     };
 
     const handleAddCart = () => {
@@ -102,7 +107,7 @@ const BookPage = () => {
             imgSrc: book.imgSrc,
         };
 
-        addBookInCart(bookBuyInfo);
+        addBookInCart(bookBuyInfo, false);
     };
 
     const handleBuy = () => {
@@ -117,8 +122,7 @@ const BookPage = () => {
             imgSrc: book.imgSrc,
         };
 
-        addBookInCart(bookBuyInfo);
-        navigate("/cart");
+        addBookInCart(bookBuyInfo, true);
     };
 
     useEffect(() => {
