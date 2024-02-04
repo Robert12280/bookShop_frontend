@@ -64,7 +64,7 @@ function App() {
 
             getCartFromDatabase();
         }
-    }, [axiosPrivate, token]);
+    }, [axiosPrivate]);
 
     return (
         <div className="App">
