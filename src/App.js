@@ -36,8 +36,6 @@ function App() {
 
     // Get cart
     useEffect(() => {
-        console.log("isajdijasdi");
-        console.log(token);
         if (token) {
             const getCartFromDatabase = () => {
                 const controller = new AbortController();
