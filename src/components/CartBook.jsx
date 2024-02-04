@@ -18,7 +18,7 @@ const CartBook = ({ book, setIsSaveCartError }) => {
 
         const updateCartAxios = async () => {
             try {
-                await axiosPrivate.post("/cart", bookList, {
+                await axiosPrivate.patch("/cart", bookList, {
                     signal: controller.signal,
                 });
             } catch (err) {
