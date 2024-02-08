@@ -36,36 +36,43 @@ const LoginPage = () => {
     if (isLoading) return <p style={{ marginTop: "10rem" }}>Loading...</p>;
 
     return (
-        <section className="login">
-            <form className="loginForm" onSubmit={handleSubmit}>
-                <label htmlFor="username">使用者名稱</label>
-                <input
-                    type="text"
-                    id="username"
-                    ref={userRef}
-                    placeholder="使用者名稱"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <label htmlFor="password">密碼</label>
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="密碼"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <p className="errMsg" aria-live="assertive">
-                    {loginErrMsg}
-                </p>
-                <input type="submit" id="submit" value="登入" />
-                <p>
-                    還沒有帳號嗎？請點擊<Link to="/register">註冊</Link>
-                </p>
-            </form>
-        </section>
+        <div className="loginPage">
+            <section className="login">
+                <form className="loginForm" onSubmit={handleSubmit}>
+                    <label htmlFor="username">使用者名稱</label>
+                    <input
+                        type="text"
+                        id="username"
+                        ref={userRef}
+                        placeholder="使用者名稱"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                    <label htmlFor="password">密碼</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="密碼"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <p className="errMsg" aria-live="assertive">
+                        {loginErrMsg}
+                    </p>
+                    <input type="submit" id="submit" value="登入" />
+                    <p>
+                        還沒有帳號嗎？請點擊<Link to="/register">註冊</Link>
+                    </p>
+                </form>
+            </section>
+            <div className="testInfo">
+                <h3>測試帳號密碼</h3>
+                <p>帳號：12345678</p>
+                <p>密碼：12345678</p>
+            </div>
+        </div>
     );
 };
 
