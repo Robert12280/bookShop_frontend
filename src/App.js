@@ -10,7 +10,7 @@ import BookPage from "./components/BookPage";
 import PersistLogin from "./components/PersistLogin";
 import RequireAuth from "./components/RequireAuth";
 import useAxiosFetch from "./hooks/useAxiosFetch";
-import { useStoreActions, useStoreState } from "easy-peasy";
+import { action, useStoreActions, useStoreState } from "easy-peasy";
 import Missing from "./components/Missing";
 import Layout from "./components/Layout";
 import useAxiosPrivate from "./hooks/useAxiosPrivate";
@@ -18,6 +18,7 @@ import OrderPage from "./components/OrderPage";
 
 function App() {
     const token = useStoreState((state) => state.token);
+    const isLoginAct = useStoreState((state) => state.isLoginAct);
     const isRefreshSuccess = useStoreState((state) => state.isRefreshSuccess);
     const setIsCartLoading = useStoreActions(
         (actions) => actions.setIsCartLoading
@@ -65,7 +66,7 @@ function App() {
 
             getCartFromDatabase();
         }
-    }, [axiosPrivate, isRefreshSuccess]);
+    }, [axiosPrivate, isRefreshSuccess, isLoginAct]);
 
     return (
         <div className="App">

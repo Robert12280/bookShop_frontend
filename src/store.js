@@ -54,6 +54,10 @@ export default createStore({
     setRegisterErrMsg: action((state, payload) => {
         state.registerErrMsg = payload;
     }),
+    isLoginAct: false,
+    setIsLoginAct: action((state, payload) => {
+        state.isLoginAct = payload;
+    }),
     isRegisterSuccess: false,
     setIsRegisterSuccess: action((state, payload) => {
         state.isRegisterSuccess = payload;
@@ -102,6 +106,7 @@ export default createStore({
         }
     }),
     loginPost: thunk(async (actions, user, helpers) => {
+        const { isLoginAct } = helpers.getState();
         try {
             actions.setIsLoading(true);
             const response = await axios.post("/auth/login", user, {
@@ -109,6 +114,7 @@ export default createStore({
                 withCredentials: true,
             });
             actions.setToken(response?.data?.accessToken);
+            actions.setIsLoginAct(!isLoginAct);
         } catch (err) {
             if (!err.response.status) {
                 actions.setLoginErrMsg("No Server Response");
