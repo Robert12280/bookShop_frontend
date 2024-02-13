@@ -63,7 +63,10 @@ const LoginPage = () => {
                     <p className="errMsg" aria-live="assertive">
                         {loginErrMsg}
                     </p>
-                    <a href="https://bookshop-api-lb8f.onrender.com/auth/google">
+                    <a
+                        className="googleBtn"
+                        href="https://bookshop-api-lb8f.onrender.com/auth/google"
+                    >
                         <FcGoogle />
                     </a>
 
