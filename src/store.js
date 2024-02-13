@@ -85,7 +85,7 @@ export default createStore({
     registerPost: thunk(async (actions, user, helpers) => {
         try {
             actions.setIsLoading(true);
-            const response = await axios.post("/client/register", user);
+            const response = await axios.post("/auth/register", user);
             if (response) {
                 actions.setIsRegisterSuccess(true);
             }
@@ -104,7 +104,7 @@ export default createStore({
     loginPost: thunk(async (actions, user, helpers) => {
         try {
             actions.setIsLoading(true);
-            const response = await axios.post("/client/login", user, {
+            const response = await axios.post("/auth/login", user, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
@@ -124,7 +124,7 @@ export default createStore({
     logoutPost: thunk(async (actions) => {
         try {
             actions.setIsLogoutLoading(true);
-            await axios.post("/client/logout", null, { withCredentials: true });
+            await axios.post("/auth/logout", null, { withCredentials: true });
             actions.setToken(null);
         } catch (err) {
             actions.setLogoutErrMsg(`Error: ${err.message}`);

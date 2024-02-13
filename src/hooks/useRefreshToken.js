@@ -5,7 +5,7 @@ const useRefreshToken = () => {
     const setToken = useStoreActions((actions) => actions.setToken);
 
     const refresh = async () => {
-        const response = await axios.get("/client/refresh", {
+        const response = await axios.get("/auth/refresh", {
             withCredentials: true,
         });
 

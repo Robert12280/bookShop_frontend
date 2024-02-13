@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import "./LoginPage.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useStoreState, useStoreActions } from "easy-peasy";
+import { FcGoogle } from "react-icons/fc";
+import axios from "../api/axios";
 
 const LoginPage = () => {
     const userRef = useRef();
@@ -61,6 +63,10 @@ const LoginPage = () => {
                     <p className="errMsg" aria-live="assertive">
                         {loginErrMsg}
                     </p>
+                    <a href="http://localhost:3500/auth/google">
+                        <FcGoogle />
+                    </a>
+
                     <input type="submit" id="submit" value="登入" />
                     <p>
                         還沒有帳號嗎？請點擊<Link to="/register">註冊</Link>
