@@ -5,3 +5,6 @@
 ## 描述
 
 使用 React 開發前端，React-router 處理路由部分，Easy-peasy 管理 store
+
+## 操作影片
+https://github.com/Robert12280/bookShop_backend/assets/80948837/e557ec66-94b7-4aa2-8944-72b0f301935a
