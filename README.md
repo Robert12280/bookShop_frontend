@@ -9,3 +9,7 @@
 ## 系統架構
 
 ![architecture](./readme//architecture.png)
+
+## 操作影片
+
+https://github.com/Robert12280/bookShop_backend/assets/80948837/e557ec66-94b7-4aa2-8944-72b0f301935a
