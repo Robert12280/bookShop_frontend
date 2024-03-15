@@ -65,7 +65,7 @@ const LoginPage = () => {
                     </p>
                     <a
                         className="googleBtn"
-                        href="https://bookshop-api-lb8f.onrender.com/auth/google"
+                        href="http://localhost:3500/auth/google"
                     >
                         <FcGoogle />
                     </a>
