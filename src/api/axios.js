@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "https://bookshop-api-lb8f.onrender.com/auth/google";
+const BASE_URL = "https://bookshop-api-lb8f.onrender.com";
 
 export default axios.create({
     baseURL: BASE_URL,
